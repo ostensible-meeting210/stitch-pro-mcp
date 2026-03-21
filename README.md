@@ -67,23 +67,22 @@ npm install -g stitch-pro-mcp
 <details>
 <summary><b>Claude Code</b></summary>
 
+**Recommended (CLI):**
+
 ```bash
-claude mcp add stitch-pro -- npx -y stitch-pro-mcp
+# Install globally first
+npm install -g stitch-pro-mcp
+
+# Add to Claude Code with API key
+claude mcp add -e STITCH_API_KEY=your-api-key --transport stdio stitch-pro -- node $(npm root -g)/stitch-pro-mcp/dist/bin/cli.js
 ```
 
-Or add to `~/.claude/settings.json`:
-
-```json
-{
-  "mcpServers": {
-    "stitch-pro": {
-      "command": "npx",
-      "args": ["-y", "stitch-pro-mcp"],
-      "env": { "STITCH_API_KEY": "your-api-key" }
-    }
-  }
-}
+**Windows users:** Use the full path to the installed CLI:
+```bash
+claude mcp add -e STITCH_API_KEY=your-api-key --transport stdio stitch-pro -- node "C:/Users/YOUR_USER/AppData/Roaming/npm/node_modules/stitch-pro-mcp/dist/bin/cli.js"
 ```
+
+> **Note:** MCP servers in Claude Code are configured in `~/.claude.json` (local scope), NOT in `~/.claude/settings.json`. Use `claude mcp add` to configure — it handles the correct file automatically.
 
 </details>
 
@@ -217,6 +216,50 @@ Add to `~/.codex/config.json`:
 </details>
 
 > **Tip:** Set `STITCH_API_KEY` as a system environment variable and omit the `env` block entirely.
+
+### Troubleshooting
+
+<details>
+<summary><b>Windows: "Connection closed" or server not connecting</b></summary>
+
+On Windows, `npx` doesn't work directly as an MCP command. Use one of these approaches:
+
+**Option A: Install globally + use `node` with full path (recommended)**
+```bash
+npm install -g stitch-pro-mcp
+# Then configure with absolute path to the CLI:
+# node C:/Users/YOUR_USER/AppData/Roaming/npm/node_modules/stitch-pro-mcp/dist/bin/cli.js
+```
+
+**Option B: Wrap `npx` with `cmd /c`**
+```json
+{
+  "command": "cmd",
+  "args": ["/c", "npx", "-y", "stitch-pro-mcp"]
+}
+```
+
+</details>
+
+<details>
+<summary><b>Claude Code: MCP server not showing tools</b></summary>
+
+1. MCP servers are configured in `~/.claude.json`, **not** `~/.claude/settings.json` or `~/.claude/.mcp.json`
+2. Use `claude mcp add` CLI command to configure — it writes to the correct file
+3. After adding, **restart Claude Code** for tools to appear
+4. Verify with: `claude mcp list` — should show `stitch-pro: ✓ Connected`
+
+</details>
+
+<details>
+<summary><b>Server starts but tools don't respond</b></summary>
+
+Check for double-start: if you see `"Starting stitch-pro"` logged twice, you're on v0.1.0 which had a bug where the server started twice. Update to v0.1.2+:
+```bash
+npm install -g stitch-pro-mcp@latest
+```
+
+</details>
 
 ---
 
