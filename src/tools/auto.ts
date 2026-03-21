@@ -367,7 +367,7 @@ function parseIntent(prompt: string): ParsedIntent {
   // Industry detection
   const industryPatterns: [RegExp, string][] = [
     [/\bsaas\b/, 'SaaS'], [/\bfintech\b|\bfinance\b|\bbanking\b/, 'fintech'],
-    [/\bhealth\b|\bmedical\b/, 'healthcare'], [/\becommerce\b|\bshop\b|\bstore\b/, 'e-commerce'],
+    [/\bhealthcare\b|\bhealth\b|\bmedical\b/, 'healthcare'], [/\becommerce\b|\bshop\b|\bstore\b/, 'e-commerce'],
     [/\beducation\b|\blearning\b/, 'education'], [/\bsocial\b/, 'social media'],
     [/\bblog\b/, 'media'], [/\bfood\b|\brestaurant\b/, 'food & beverage'],
   ];
