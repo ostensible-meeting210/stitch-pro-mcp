@@ -6,11 +6,14 @@
     <strong>17 tools. One prompt.</strong>
   </p>
   <p align="center">
-    <a href="https://www.npmjs.com/package/stitch-pro-mcp"><img src="https://img.shields.io/npm/v/stitch-pro-mcp?style=flat-square&color=blue" alt="npm"></a>
+    <a href="https://www.npmjs.com/package/stitch-pro-mcp"><img src="https://img.shields.io/npm/v/stitch-pro-mcp?style=flat-square&color=blue&label=npm" alt="npm version"></a>
+    <a href="https://www.npmjs.com/package/stitch-pro-mcp"><img src="https://img.shields.io/npm/dm/stitch-pro-mcp?style=flat-square&color=blue" alt="npm downloads"></a>
     <a href="https://github.com/LuciferDono/stitch-pro-mcp/blob/master/LICENSE"><img src="https://img.shields.io/github/license/LuciferDono/stitch-pro-mcp?style=flat-square" alt="license"></a>
     <a href="https://github.com/LuciferDono/stitch-pro-mcp"><img src="https://img.shields.io/github/stars/LuciferDono/stitch-pro-mcp?style=flat-square" alt="stars"></a>
+    <a href="https://github.com/LuciferDono/stitch-pro-mcp/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/LuciferDono/stitch-pro-mcp/ci.yml?style=flat-square&label=CI" alt="CI"></a>
     <a href="https://stitch.withgoogle.com"><img src="https://img.shields.io/badge/Google-Stitch-4285F4?style=flat-square&logo=google" alt="Google Stitch"></a>
     <a href="https://modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP-compatible-green?style=flat-square" alt="MCP"></a>
+    <a href="https://luciferdono.github.io/stitch-pro-mcp"><img src="https://img.shields.io/badge/docs-website-purple?style=flat-square" alt="docs"></a>
   </p>
   <p align="center">
     <a href="#quick-start">Quick Start</a> ·
@@ -52,6 +55,10 @@ Visit [stitch.withgoogle.com](https://stitch.withgoogle.com) and create an API k
 ### 2. Install
 
 ```bash
+# Run directly (no install)
+npx stitch-pro-mcp
+
+# Or install globally
 npm install -g stitch-pro-mcp
 ```
 
@@ -386,18 +393,30 @@ npm test             # Run tests
 | `@google/stitch-sdk` | Stitch API client |
 | `parse5` | HTML → AST (no browser) |
 | `axe-core` + `jsdom` | WCAG accessibility auditing |
-| `zod` | Runtime input validation |
+| `zod` | Runtime input validation (all 17 tools) |
 | `color` | Color math for design systems |
-| TypeScript | Full type safety, 30 source files |
+| `vitest` | 81 tests across 11 test suites |
+| TypeScript | Full type safety, 29 source files, 4,700+ lines |
+
+## Stats
+
+- **17** MCP tools
+- **7** pipeline processors
+- **3** framework emitters (React, Vue, Svelte)
+- **81** tests passing
+- **104 KB** package size (compressed)
+- **8** supported platforms
 
 ## Roadmap
 
+- [x] ~~npm publish for `npx stitch-pro-mcp`~~
+- [x] ~~CI/CD with GitHub Actions~~
+- [x] ~~GitHub Pages docs site~~
 - [ ] `sp_batch` — full app frontend in one call (layout + nav + pages + routing)
 - [ ] Screenshot-to-code pipeline (screenshot → Stitch → framework output)
 - [ ] Figma import via Stitch paste bridge
 - [ ] LLM-powered design system generation (Claude API)
 - [ ] Streamable HTTP transport for remote deployment
-- [ ] npm publish for `npx stitch-pro-mcp`
 
 ## Contributing
 
