@@ -13,6 +13,7 @@ import { registerAccessibilityTools } from './tools/accessibility.js';
 import { registerResponsiveTools } from './tools/responsive.js';
 import { registerDesignSystemTools } from './tools/design-system.js';
 import { registerConvertTools } from './tools/convert.js';
+import { registerAutoTools } from './tools/auto.js';
 import { logger } from './utils/logger.js';
 import type { DesignSystem } from './types/design-system.js';
 
@@ -45,6 +46,7 @@ export function createServer() {
   registerResponsiveTools(server, pipeline);
   registerDesignSystemTools(server, designSystems);
   registerConvertTools(server, pipeline);
+  registerAutoTools(server, client, pipeline, designSystems);
 
   return server;
 }

@@ -188,6 +188,14 @@ Or set `STITCH_API_KEY` as a system environment variable and omit the `env` bloc
 
 ## Tools
 
+### Smart (Auto-Orchestration)
+
+| Tool | Description |
+|------|-------------|
+| `sp_auto` | **The god tool.** Describe what you want in plain English — auto-detects framework, component library, theme, device, and chains design system creation → generation → a11y → responsive → conversion. One call does everything. |
+| `sp_analyze` | Analyze any HTML — reports a11y issues, missing responsiveness, component mapping potential, color sprawl. Returns a recommended tool chain. |
+| `sp_smart_convert` | Convert HTML to a framework but auto-runs a11y + responsive fixes first. No manual chaining needed. |
+
 ### Generation
 
 | Tool | Description |
@@ -257,26 +265,56 @@ User prompt
 
 ## Examples
 
-### Generate a page with design system + React output
+### One prompt, full output (sp_auto)
 
 ```
-→ sp_design_create (brand: "Acme", personality: ["modern", "clean"])
-→ sp_generate (framework: "react", componentLibrary: "shadcn", designSystemId: "...")
-→ Returns: Next.js .tsx with shadcn components, useState, responsive, WCAG compliant
+→ sp_auto (prompt: "Dark SaaS pricing page in React with shadcn", projectId: "...")
+
+Auto-detects:
+  ✓ framework: react
+  ✓ componentLibrary: shadcn
+  ✓ darkMode: true
+  ✓ industry: SaaS
+
+Auto-chains:
+  1. Creates dark-themed design system
+  2. Enriches prompt with brand tokens
+  3. Generates page via Stitch API
+  4. Runs WCAG 2.1 AA audit + auto-fix
+  5. Injects responsive breakpoints
+  6. Converts to Next.js .tsx with shadcn components
+
+→ Returns: ready-to-use files, dependencies, a11y report, timing breakdown
 ```
 
-### Convert existing HTML to Vue
+### Analyze before acting (sp_analyze)
 
 ```
-→ sp_to_vue (html: "<div class='...'>...</div>", componentLibrary: "radix")
-→ Returns: Vue 3 SFC with <script setup>, ref() state, @event bindings
+→ sp_analyze (html: "<div class='flex gap-4 bg-blue-500'>...")
+
+→ Returns:
+  recommendations:
+    - sp_a11y (HIGH): missing lang attr, no <main>
+    - sp_responsive (HIGH): fixed widths detected
+    - sp_extract (MEDIUM): buttons + cards mappable to shadcn
+  suggestedChain: ["sp_a11y", "sp_responsive", "sp_extract", "sp_to_react"]
 ```
 
-### Audit accessibility on any HTML
+### Smart convert (auto-preprocesses)
 
 ```
+→ sp_smart_convert (html: "...", framework: "vue", componentLibrary: "radix")
+
+Auto-runs: a11y fix → responsive inject → component extract → Vue 3 emit
+→ Returns: .vue SFCs with <script setup>, ref() state, WCAG compliant, responsive
+```
+
+### Manual tools still work
+
+```
+→ sp_to_react (html: "...", componentLibrary: "shadcn")
 → sp_a11y (html: "...", autoFix: true)
-→ Returns: fixed HTML + violation report
+→ sp_design_create (name: "Acme", primaryColor: "#6366F1")
 ```
 
 ## Development
