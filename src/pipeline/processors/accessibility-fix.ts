@@ -78,18 +78,22 @@ export class AccessibilityFixProcessor implements Processor {
       fixesApplied++;
     }
 
-    // Auto-fix: touch targets (min 44x44)
-    const clickables = document.querySelectorAll('button, a, input, select, textarea');
-    clickables.forEach(el => {
-      const style = el.getAttribute('style') || '';
-      if (!style.includes('min-height') && !style.includes('min-width')) {
-        const classes = el.getAttribute('class') || '';
-        if (!classes.includes('min-h-') && !classes.includes('min-w-')) {
-          el.setAttribute('class', `${classes} min-h-[44px] min-w-[44px]`.trim());
-          fixesApplied++;
-        }
-      }
-    });
+    // Auto-fix: touch targets — only fix elements axe-core flagged as too small
+    const targetViolation = results.violations.find(v => v.id === 'target-size');
+    if (targetViolation) {
+      targetViolation.nodes.forEach(node => {
+        try {
+          const el = document.querySelector(node.target?.[0] as string);
+          if (el) {
+            const classes = el.getAttribute('class') || '';
+            if (!classes.includes('min-h-') && !classes.includes('min-w-')) {
+              el.setAttribute('class', `${classes} min-h-[44px] min-w-[44px]`.trim());
+              fixesApplied++;
+            }
+          }
+        } catch {}
+      });
+    }
 
     const report: A11yReport = {
       violations: results.violations.map(v => ({

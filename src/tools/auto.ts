@@ -66,9 +66,11 @@ export function registerAutoTools(
       const steps: string[] = [];
       const results: Record<string, unknown> = {};
 
-      // Step 1: Design system (if brand/theme cues detected)
+      // Step 1: Design system — skip by default. Stitch handles its own colors.
+      // Only create if user explicitly mentions "design system" or "brand tokens".
       let ds: DesignSystem | undefined;
-      if (intent.needsDesignSystem) {
+      const explicitDesignSystem = /\bdesign\s*system\b|\bbrand\s*tokens?\b|\bdesign\s*tokens?\b/i.test(prompt);
+      if (explicitDesignSystem) {
         const { v4: uuid } = await import('uuid');
         const Color = (await import('color')).default;
         const id = uuid();
@@ -373,8 +375,9 @@ function parseIntent(prompt: string): ParsedIntent {
   ];
   const industry = industryPatterns.find(([re]) => re.test(lower))?.[1];
 
-  // Multi-screen detection
-  const multiScreenPatterns = /\bflow\b|\bscreens?\b|\bpages?\b|\blogin\s*(?:and|&|,|\+)\s*\w+|\bdashboard\s*(?:and|&|,|\+)\s*\w+/;
+  // Multi-screen detection — only trigger on explicit multi-screen intent
+  // "page" alone should NOT trigger multi-screen. Require "pages" (plural) or explicit flow keywords.
+  const multiScreenPatterns = /\bmultiple\s+(?:screens?|pages?)\b|\b\d+\s+(?:screens?|pages?)\b|\bflow\b.*\b(?:and|&)\b|\blogin\s*(?:and|&|,|\+)\s*dashboard/;
   const isMultiScreen = multiScreenPatterns.test(lower);
 
   // Extract individual screen descriptions

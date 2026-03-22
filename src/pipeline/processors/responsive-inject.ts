@@ -29,7 +29,13 @@ export class ResponsiveInjectProcessor implements Processor {
   readonly phase = 'post-generate' as const;
 
   shouldRun(ctx: PipelineContext): boolean {
-    return ctx.enableResponsive && !!ctx.processedHtml;
+    if (!ctx.enableResponsive || !ctx.processedHtml) return false;
+    // Skip if Stitch already added responsive classes (sm:, md:, lg:)
+    const html = ctx.processedHtml;
+    const hasBreakpoints = /\bsm:|md:|lg:|xl:/.test(html);
+    const hasViewport = /viewport/.test(html);
+    if (hasBreakpoints && hasViewport) return false;
+    return true;
   }
 
   async process(ctx: PipelineContext): Promise<PipelineContext> {

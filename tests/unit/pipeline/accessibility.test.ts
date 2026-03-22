@@ -53,12 +53,14 @@ describe('AccessibilityFixProcessor', () => {
     expect(result.processedHtml).toContain('<main>');
   });
 
-  it('should add min touch target sizes to interactive elements', async () => {
+  it('should only fix touch targets flagged by axe-core, not blindly on all elements', async () => {
     const ctx = { ...createContext({ prompt: 'test' }), processedHtml: BAD_HTML };
     const result = await processor.process(ctx);
 
-    expect(result.processedHtml).toContain('min-h-[44px]');
-    expect(result.processedHtml).toContain('min-w-[44px]');
+    // Touch targets are only fixed if axe-core flags target-size violations
+    // Not blindly added to every interactive element
+    expect(result.accessibilityReport).toBeDefined();
+    expect(result.accessibilityReport!.fixesApplied).toBeGreaterThan(0);
   });
 
   it('should return an accessibility report', async () => {

@@ -1,8 +1,29 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { StitchClient } from '../stitch/client.js';
 import { ListProjectsInput, ListScreensInput, GetScreenInput } from '../types/tools.js';
+import { z } from 'zod';
+
+const CreateProjectInput = z.object({
+  title: z.string().min(1).describe('Name for the new Stitch project'),
+});
 
 export function registerListingTools(server: McpServer, client: StitchClient) {
+  server.registerTool(
+    'sp_create_project',
+    {
+      title: 'Create Stitch Project',
+      description: 'Create a new Stitch project. Returns the project ID needed for sp_generate and sp_auto.',
+      inputSchema: CreateProjectInput.shape,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false },
+    },
+    async ({ title }) => {
+      const projectId = await client.createProject(title);
+      return {
+        content: [{ type: 'text', text: JSON.stringify({ projectId, title }, null, 2) }],
+      };
+    },
+  );
+
   server.registerTool(
     'sp_projects',
     {

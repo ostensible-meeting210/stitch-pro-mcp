@@ -64,13 +64,29 @@ export class StitchClient {
   }
 
   async createProject(title: string): Promise<string> {
-    // SDK uses callTool for project creation
-    const client = this.stitch as any;
-    if (client.callTool) {
-      const result = await client.callTool('create_project', { title });
-      return result?.projectId ?? title;
+    const apiKey = process.env.STITCH_API_KEY;
+    if (!apiKey) throw new StitchApiError('STITCH_API_KEY not set', 401);
+
+    // Call REST API directly — SDK doesn't expose project creation reliably
+    const res = await fetch('https://stitch.googleapis.com/v1/projects', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
+      },
+      body: JSON.stringify({ title }),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new StitchApiError(`Failed to create project: ${text}`, res.status);
     }
-    return title;
+
+    const data = await res.json() as { name: string };
+    // name format: "projects/18201484303198177641"
+    const projectId = data.name.replace('projects/', '');
+    logger.info('Created project', { projectId, title });
+    return projectId;
   }
 
   private async screenToData(screen: Screen): Promise<ScreenData> {
